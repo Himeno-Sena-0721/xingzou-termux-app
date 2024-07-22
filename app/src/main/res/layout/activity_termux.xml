@@ -5,7 +5,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:fitsSystemWindows="true">
+    android:fitsSystemWindows="true"
+    android:background="@drawable/background_with_opacity">
 
     <RelativeLayout
         android:id="@+id/activity_termux_root_relative_layout"
@@ -56,6 +57,13 @@
                         android:layout_width="40dp"
                         android:layout_height="40dp"
                         android:src="@drawable/ic_settings"
+                        android:background="@null"
+                        android:contentDescription="@string/action_open_settings" />
+                    <ImageButton
+                        android:id="@+id/xingzou_settings_button"
+                        android:layout_width="40dp"
+                        android:layout_height="40dp"
+                        android:src="@drawable/xingzou"
                         android:background="@null"
                         android:contentDescription="@string/action_open_settings" />
                 </LinearLayout>

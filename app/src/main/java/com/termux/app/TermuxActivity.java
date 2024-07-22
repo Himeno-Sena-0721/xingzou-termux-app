@@ -1,5 +1,7 @@
 package com.termux.app;
 
+import static com.termux.shared.packages.PackageUtils.isAppInstalled;
+
 import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.Activity;
@@ -29,6 +31,7 @@ import android.view.autofill.AutofillManager;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ListView;
+import android.widget.PopupMenu;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
 
@@ -232,6 +235,8 @@ public final class TermuxActivity extends Activity implements ServiceConnection 
         setSettingsButtonView();
 
         setNewSessionButtonView();
+
+        setXingzouSettingsButtonView();
 
         setToggleKeyboardView();
 
@@ -525,6 +530,71 @@ public final class TermuxActivity extends Activity implements ServiceConnection 
             startActivity(new Intent(this, SettingsActivity.class));
         });
     }
+
+    private static final int PICK_IMAGE_REQUEST = 1;
+
+    private void setXingzouSettingsButtonView() {
+        ImageButton settingsButton = findViewById(R.id.xingzou_settings_button);
+        settingsButton.setOnClickListener(view -> {
+            PopupMenu popup = new PopupMenu(this, view);
+            popup.getMenuInflater().inflate(R.menu.xingzou_settings_menu, popup.getMenu());
+
+            popup.setOnMenuItemClickListener(item -> {
+                switch (item.getItemId()) {
+                    case R.id.option1:
+
+                        return true;
+                    case R.id.option2:
+
+                        return true;
+                    case R.id.option3:
+                        startYuanShen();
+
+                        return true;
+                    default:
+                        return false;
+                }
+            });
+
+            popup.show();
+        });
+    }
+    private void startYuanShen() {
+        // 原神的包名（注意：请确保这个包名是正确的）
+        String packageName = "com.miHoYo.GenshinImpact";
+
+        // 检查设备是否安装了原神
+        if (isAppInstalled(packageName)) {
+            // 创建一个启动原神的Intent
+            Intent intent = getPackageManager().getLaunchIntentForPackage(packageName);
+            if (intent != null) {
+                startActivity(intent);
+            } else {
+                Toast.makeText(this, "无法启动原神", Toast.LENGTH_SHORT).show();
+            }
+        } else {
+            // 提示用户未安装原神
+            Toast.makeText(this, "未安装原神", Toast.LENGTH_SHORT).show();
+            // 可选：引导用户到应用商店下载原神
+            try {
+                startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=" + packageName)));
+            } catch (android.content.ActivityNotFoundException anfe) {
+                startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("https://play.google.com/store/apps/details?id=" + packageName)));
+            }
+        }
+    }
+    private boolean isAppInstalled(String packageName) {
+        PackageManager pm = getPackageManager();
+        try {
+            pm.getPackageInfo(packageName, PackageManager.GET_ACTIVITIES);
+            return true;
+        } catch (PackageManager.NameNotFoundException e) {
+            return false;
+        }
+    }
+
+
+
 
     private void setNewSessionButtonView() {
         View newSessionButton = findViewById(R.id.new_session_button);
